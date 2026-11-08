@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react"
 import SideBar from "./components/SideBar"
 import Message from "./components/Message"
 import ChatInput from "./components/ChatInput"
-import { pedirRespuesta } from "./service/Api"
+import { generarExamen } from "./api"
 
 function App() {
     const [archivo, setArchivo] = useState(null)
@@ -23,10 +23,10 @@ function App() {
         setMensajes([...mensajes, { quien: "yo", texto: miMensaje }])
         setCargando(true)
         try {
-            const respuesta = await pedirRespuesta(archivo, cantidad, dificultad, tipo)
-            setMensajes((antes) => [...antes, { quien: "bot", texto: respuesta }])
+            const { examen } = await generarExamen(archivo, { cantidad, dificultad, tipo })
+            setMensajes((antes) => [...antes, { quien: "bot", texto: examen }])
         } catch (error) {
-            setMensajes((antes) => [...antes, { quien: "bot", texto: `❌ No pude conectar con la IA (${error.message}). ¿Está corriendo Colab y la dirección en Api.js es la correcta?` }])
+            setMensajes((antes) => [...antes, { quien: "bot", texto: `❌ No pude conectar con la IA (${error.message}). ¿Está corriendo Colab y VITE_API_URL en .env es la correcta?` }])
         }
         setArchivo(null)
         setCargando(false)
